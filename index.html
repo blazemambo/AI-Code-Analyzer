@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+        }
+        button {
+            margin-top: 10px;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Code Performance Analyzer</h1>
+    <textarea id="code" placeholder="Paste your code here..."></textarea>
+    <br>
+    <button onclick="analyzeCode()">Analyze Code</button>
+    <div class="results" id="results"></div>
+
+    <script>
+        async function analyzeCode() {
+            const code = document.getElementById('code').value;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = "Analyzing...";
+            
+            const response = await fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                resultsDiv.innerHTML = `<h3>Suggestions:</h3><ul>${
+                    data.suggestions.map(s => `<li>${s}</li>`).join('')
+                }</ul>`;
+            } else {
+                resultsDiv.innerHTML = "Error analyzing code.";
+            }
+        }
+    </script>
+</body>
+</html>
